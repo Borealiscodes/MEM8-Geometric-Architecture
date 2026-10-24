@@ -1,0 +1,79 @@
+\section{Semantic Routing}
+
+Semantic routing determines which computational pathway a fused and stabilized
+semantic state should follow. In the MEM8-Geometric-Architecture, routing is
+performed using geometric similarity between the current semantic vector and a
+set of learned route vectors. This mechanism enables context-sensitive
+transitions across the cognitive manifold.
+
+Let $\mathbf{z} \in \mathbb{R}^d$ denote the fused semantic vector after
+stability filtering. Let $\{\mathbf{r}_i\}_{i=1}^k$ be a set of learned route
+vectors, each representing a distinct processing pathway or cognitive
+operation.
+
+\subsection{Cosine Similarity Routing}
+
+Routing is defined as selecting the route vector with maximum cosine similarity
+to the current semantic state:
+
+\[
+i^\* = \arg\max_i\,
+\cos(\mathbf{z}, \mathbf{r}_i)
+\]
+
+where cosine similarity is:
+
+\[
+\cos(\mathbf{z}, \mathbf{r}_i) =
+\frac{\mathbf{z}^\top \mathbf{r}_i}
+{\|\mathbf{z}\|\,\|\mathbf{r}_i\|}
+\]
+
+This metric evaluates directional alignment on the semantic manifold, ensuring
+that routing decisions reflect geometric coherence rather than magnitude alone.
+
+\subsection{Geometric Interpretation}
+
+Each route vector $\mathbf{r}_i$ defines a direction on the semantic manifold.
+Routing selects the direction most aligned with the current semantic state,
+interpreting cognition as movement along preferred geometric trajectories.
+
+This formulation supports:
+
+\begin{itemize}
+\item curvature-aware transitions,
+\item drift-sensitive routing,
+\item stability-preserving updates,
+\item smooth geodesic continuation.
+\end{itemize}
+
+Because cosine similarity is invariant to scale, routing decisions depend only
+on direction, making them robust to magnitude fluctuations introduced by
+modality imbalance or partial observability.
+
+\subsection{Route Vector Learning}
+
+Route vectors are learned through gradient-based optimization, typically using
+contrastive or alignment-based objectives. Each route vector corresponds to a
+distinct cognitive function, such as:
+
+\begin{itemize}
+\item memory update,
+\item contextual expansion,
+\item modality reweighting,
+\item stability reinforcement,
+\item action selection.
+\end{itemize}
+
+The geometric separation of route vectors ensures that routing decisions remain
+interpretable and stable across diverse semantic inputs.
+
+\subsection{Role in the Cognitive Loop}
+
+Routing occurs after stability filtering and before membrane evaluation. The
+selected route determines which geometric operators will be applied next,
+including curvature checks, collapse-risk evaluation, Jacobian smoothness
+analysis, and firewall enforcement.
+
+This makes routing a critical decision point in the cognitive loop, guiding the
+semantic state along appropriate geometric pathways.
