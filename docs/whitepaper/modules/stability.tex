@@ -1,0 +1,80 @@
+\section{Stability Filtering}
+
+Stability filtering ensures that semantic states evolve smoothly over time,
+preventing jitter, noise amplification, and abrupt geometric transitions.
+In the MEM8-Geometric-Architecture, stability is implemented using a Kalman
+filter, which provides optimal state estimation under uncertainty.
+
+Let $\mathbf{x}_t \in \mathbb{R}^d$ denote the fused semantic state at time $t$,
+and let $\mathbf{u}_t$ represent optional control inputs. The stability filter
+operates in two phases: prediction and update.
+
+\subsection{Prediction Step}
+
+The predicted semantic state is given by:
+\[
+\mathbf{x}_{t|t-1} = A \mathbf{x}_{t-1} + B \mathbf{u}_t
+\]
+
+Here,
+\[
+A \in \mathbb{R}^{d \times d}, \quad B \in \mathbb{R}^{d \times m}
+\]
+are learned geometric transition matrices. The predicted covariance is:
+\[
+P_{t|t-1} = A P_{t-1} A^\top + Q
+\]
+where $Q$ is the process noise covariance.
+
+\subsection{Update Step}
+
+Given an observation $\mathbf{y}_t$, the updated semantic state is:
+\[
+\mathbf{x}_{t|t} =
+\mathbf{x}_{t|t-1} +
+K_t (\mathbf{y}_t - \mathbf{x}_{t|t-1})
+\]
+
+The Kalman gain is:
+\[
+K_t =
+P_{t|t-1} H^\top
+\left(
+H P_{t|t-1} H^\top + R
+\right)^{-1}
+\]
+
+The updated covariance is:
+\[
+P_{t|t} = (I - K_t H) P_{t|t-1}
+\]
+
+\subsection{Geometric Interpretation}
+
+Stability filtering can be viewed as a curvature-aware smoothing operation on
+the semantic manifold. The prediction step advances the state along a learned
+geometric trajectory, while the update step corrects deviations using observed
+data.
+
+The Kalman gain determines how strongly the system trusts the observation
+versus the predicted trajectory. High gain corresponds to rapid correction,
+while low gain corresponds to smooth continuation along the manifold.
+
+This geometric smoothing is essential for preventing:
+
+\begin{itemize}
+\item drift amplification,
+\item curvature spikes,
+\item collapse-risk escalation,
+\item abrupt semantic jumps,
+\item instability in downstream routing.
+\end{itemize}
+
+\subsection{Role in the Cognitive Loop}
+
+Stability filtering operates after salience detection and before semantic
+routing. High-salience states may trigger stronger updates, while low-salience
+states rely more heavily on predicted trajectories.
+
+This ensures that the cognitive loop remains both responsive and stable,
+balancing novelty with continuity.
