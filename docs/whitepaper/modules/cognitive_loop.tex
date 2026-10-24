@@ -1,0 +1,125 @@
+\section{Cognitive Loop}
+
+The cognitive loop is the central operational cycle of the
+MEM8-Geometric-Architecture. It defines how semantic information is perceived,
+encoded, evaluated, routed, stabilized, and ultimately used to produce
+behavioral output. Each stage corresponds to a geometric transformation on the
+semantic manifold, ensuring continuity, stability, and interpretability.
+
+Let $\mathbf{x}_t$ denote the raw input at time $t$, and let
+$\mathbf{z}_t$ denote the fused semantic representation after encoding,
+salience scoring, and stability filtering. The cognitive loop consists of six
+stages.
+
+\subsection{1. Perception}
+
+Raw input is acquired from one or more modalities:
+\[
+\mathbf{x}_t^{(text)},\quad
+\mathbf{x}_t^{(image)},\quad
+\mathbf{x}_t^{(audio)}
+\]
+
+Each modality is mapped into a preliminary embedding space using
+modality-specific encoders. This produces:
+\[
+\mathbf{t}_t,\quad \mathbf{i}_t,\quad \mathbf{a}_t \in \mathbb{R}^d
+\]
+
+\subsection{2. Encoding}
+
+Encoding transforms raw modality embeddings into a geometric memory substrate.
+Wave memory encoding is applied to each modality:
+\[
+\mathbf{X}_{wave} = \mathcal{F}(\mathbf{x})
+\]
+
+The fused semantic vector is then computed:
+\[
+\mathbf{z}_t = W_t \mathbf{t}_t + W_i \mathbf{i}_t + W_a \mathbf{a}_t
+\]
+
+\subsection{3. Salience Scoring}
+
+Salience quantifies the behavioral relevance of the current semantic state.
+Novelty is measured via Mahalanobis distance:
+\[
+N(\mathbf{z}_t) =
+\sqrt{(\mathbf{z}_t - \bm{\mu})^\top \Sigma^{-1}
+(\mathbf{z}_t - \bm{\mu})}
+\]
+
+Temporal change is measured as drift:
+\[
+T(\mathbf{z}_t) = \|\mathbf{z}_t - \mathbf{z}_{t-1}\|
+\]
+
+Combined salience:
+\[
+S(\mathbf{z}_t) =
+\alpha N(\mathbf{z}_t) + (1 - \alpha) T(\mathbf{z}_t)
+\]
+
+\subsection{4. Stability Filtering}
+
+Stability filtering smooths the semantic trajectory using a Kalman filter.
+
+Prediction:
+\[
+\mathbf{z}_{t|t-1} = A \mathbf{z}_{t-1} + B \mathbf{u}_t
+\]
+
+Update:
+\[
+\mathbf{z}_{t|t} =
+\mathbf{z}_{t|t-1} +
+K_t (\mathbf{y}_t - \mathbf{z}_{t|t-1})
+\]
+
+This ensures geometric continuity and prevents collapse-risk escalation.
+
+\subsection{5. Routing}
+
+Routing selects the geometric direction most aligned with the stabilized
+semantic state:
+\[
+i^\* = \arg\max_i\,
+\cos(\mathbf{z}_{t|t}, \mathbf{r}_i)
+\]
+
+Each route vector $\mathbf{r}_i$ corresponds to a distinct cognitive operation.
+
+\subsection{6. Action Selection}
+
+The selected route determines the downstream operator applied to the semantic
+state. This may include:
+
+\begin{itemize}
+\item memory update,
+\item contextual expansion,
+\item modality reweighting,
+\item stability reinforcement,
+\item output generation.
+\end{itemize}
+
+Action selection produces the final output:
+\[
+\mathbf{a}_t = f_{i^\*}(\mathbf{z}_{t|t})
+\]
+
+\subsection{Geometric Interpretation}
+
+The cognitive loop is a closed geometric circuit. Each stage corresponds to a
+transformation on the semantic manifold:
+
+\begin{itemize}
+\item perception: manifold entry,
+\item encoding: geometric projection,
+\item salience: curvature-sensitive relevance scoring,
+\item stability: drift and gradient smoothing,
+\item routing: directional alignment,
+\item action: geodesic continuation.
+\end{itemize}
+
+This geometric formulation enables the MEM8-inspired cognitive architecture to
+operate continuously, stably, and interpretably across diverse semantic inputs.
