@@ -1,14 +1,31 @@
+import Mathlib.Data.Real.Basic
+import Mathlib.LinearAlgebra.Basic
+
 namespace MEM8
 
-/-- Routing flow field as a normalized vector. -/
+/-- A routing flow field: curvature-aware direction of motion. -/
 structure FlowField where
   flow : ℕ → ℝ
 
-/-- Flow field normalization invariant. -/
-def normalized (F : FlowField) : Prop :=
-  (Finset.universe ℕ).sum (fun i => (F.flow i)^2) = 1
+/-- Norm of the flow field. -/
+def flowNorm (F : FlowField) : ℝ :=
+  Real.sqrt ((Finset.universe ℕ).sum (fun i => (F.flow i)^2))
 
-lemma flow_normalized_placeholder (F : FlowField) :
-  True := by trivial
+/-- Flow normalization invariant: flow direction must be unit length. -/
+def flowNormalized (F : FlowField) : Prop :=
+  flowNorm F = 1
+
+/-- Placeholder: flow compatibility with membrane projection. -/
+def flowMembraneCompatible (F : FlowField) (P : ℕ → ℝ) : Prop :=
+  True
+
+/-- Placeholder: flow compatibility with curvature. -/
+def flowCurvatureCompatible (F : FlowField) : Prop :=
+  True
+
+/-- Placeholder: flow stability invariant. -/
+lemma flow_stable (F : FlowField) :
+  True :=
+by trivial
 
 end MEM8
