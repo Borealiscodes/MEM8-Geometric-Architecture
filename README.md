@@ -107,6 +107,8 @@ This repository is not affiliated with 8b‑is, but aims to provide a mathematic
 🗂️ Repository Structure
 
 `
+<pre> 
+
 mem8-geometric-architecture/
 │
 ├── core/                     # ⚙️ Rust wave-memory engine
@@ -148,7 +150,7 @@ mem8-geometric-architecture/
 │
 └── README.md
 `
-
+</pre>
 ---
 
 🔍 Core Concepts
