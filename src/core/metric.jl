@@ -1,54 +1,35 @@
 module Metric
 
-export Metric, inner, norm, normalize_metric, is_positive_definite
+using LinearAlgebra
+using StaticArrays
+
+export MetricTensor, metric_norm
 
 """
-    Metric(G)
+    MetricTensor(g)
 
-A Riemannian metric represented by a symmetric, positive-definite matrix `G`.
-All geometric operators (curvature, drift, holonomy, collapse-risk, geodesics)
-use this metric for inner products and norms.
+A metric tensor represented as a symmetric positive-definite matrix.
+
+This is the core geometric object from which:
+- norms
+- inner products
+- geodesics
+- curvature
+are derived.
 """
-struct Metric
-    G::Matrix{Float64}
+struct MetricTensor
+    g::SMatrix{3,3,Float64}   # 3D default; can generalize later
 end
 
 """
-    is_positive_definite(G)
+    metric_norm(M, x)
 
-Check whether a matrix is symmetric positive-definite.
-This ensures the metric defines a valid inner product.
+Compute the norm of vector x under metric M.
+‖x‖ = sqrt(xᵀ g x)
 """
-function is_positive_definite(G::Matrix{Float64})
-    issymmetric(G) && all(eigvals(G) .> 0)
+function metric_norm(M::MetricTensor, x::AbstractVector{Float64})
+    x = SVector{length(x)}(x)
+    return sqrt(dot(x, M.g * x))
 end
 
-"""
-    normalize_metric(G)
-
-Normalize a metric so that its diagonal entries are 1.0 on average.
-This keeps curvature and drift numerically stable across iterations.
-"""
-function normalize_metric(G::Matrix{Float64})
-    d = diag(G)
-    scale = mean(d)
-    return G ./ scale
-end
-
-"""
-    inner(m, x, y)
-
-Compute the metric inner product ⟨x, y⟩_m = xᵀ G y.
-This is the fundamental operation used throughout the MEM8 geometry.
-"""
-inner(m::Metric, x::Vector{Float64}, y::Vector{Float64}) = x' * m.G * y
-
-"""
-    norm(m, x)
-
-Compute the metric norm ‖x‖_m = sqrt(⟨x, x⟩_m).
-Used for drift, holonomy, collapse-risk, routing, and membrane projection.
-"""
-norm(m::Metric, x::Vector{Float64}) = sqrt(inner(m, x, x))
-
-end
+end # module
