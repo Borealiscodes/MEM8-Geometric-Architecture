@@ -1,0 +1,155 @@
+\section{Benchmark Suite}
+
+The benchmark suite evaluates the performance, stability, and geometric
+consistency of the MEM8-Geometric-Architecture. Each benchmark targets a
+specific subsystem of the cognitive loop, ensuring that the architecture
+operates reliably under diverse semantic inputs and computational conditions.
+
+Benchmarks are designed to be reproducible and platform-agnostic, supporting
+both CPU and GPU execution.
+
+\subsection{Wave Memory Benchmarks}
+
+Wave memory encoding is evaluated using three metrics:
+
+\begin{itemize}
+\item \textbf{FFT Throughput}: Measures the time required to compute the
+discrete Fourier transform:
+\[
+T_{\mathrm{FFT}} = \frac{1}{n} \sum_{i=1}^n t_i
+\]
+
+\item \textbf{Compression Ratio}: Evaluates the effectiveness of PCA or
+quantization-based compression:
+\[
+R_{\mathrm{comp}} = \frac{\|\mathbf{X}_{comp}\|}{\|\mathbf{X}_{wave}\|}
+\]
+
+\item \textbf{Reconstruction Error}: Measures fidelity of the inverse transform:
+\[
+E_{\mathrm{rec}} = \|\mathbf{x} - \mathcal{F}^{-1}(\mathbf{X}_{wave})\|
+\]
+\end{itemize}
+
+These metrics ensure that wave memory provides a stable and efficient geometric
+substrate for downstream processing.
+
+\subsection{Semantic Fusion Benchmarks}
+
+Fusion performance is evaluated using:
+
+\begin{itemize}
+\item \textbf{Cross-Modal Alignment}:
+\[
+A_{\mathrm{align}} =
+\cos(\mathbf{z}, \mathbf{r}_{target})
+\]
+
+\item \textbf{Modality Balance Score}: Measures the contribution of each
+modality to the fused vector:
+\[
+B_m = \frac{\|W_m \mathbf{m}\|}{\|\mathbf{z}\|}
+\]
+
+\item \textbf{Manifold Coherence}: Ensures fused vectors remain within the
+expected geometric region:
+\[
+C_{\mathrm{manifold}} =
+\|\mathbf{z} - \bm{\mu}\|
+\]
+\end{itemize}
+
+\subsection{Salience Benchmarks}
+
+Salience is evaluated using:
+
+\begin{itemize}
+\item \textbf{Novelty Sensitivity}: Response to out-of-distribution inputs:
+\[
+S_N = N(\mathbf{z}_t)
+\]
+
+\item \textbf{Drift Sensitivity}: Response to rapid semantic changes:
+\[
+S_T = T(\mathbf{z}_t)
+\]
+
+\item \textbf{Combined Salience Stability}: Variance of salience under repeated
+inputs:
+\[
+\sigma_S = \mathrm{Var}(S(\mathbf{z}_t))
+\]
+\end{itemize}
+
+\subsection{Stability Benchmarks}
+
+Stability filtering is evaluated using:
+
+\begin{itemize}
+\item \textbf{Prediction Error}:
+\[
+E_{\mathrm{pred}} =
+\|\mathbf{z}_{t|t-1} - \mathbf{z}_t\|
+\]
+
+\item \textbf{Update Magnitude}:
+\[
+U = \|K_t (\mathbf{y}_t - \mathbf{z}_{t|t-1})\|
+\]
+
+\item \textbf{Covariance Convergence}:
+\[
+C_{\mathrm{cov}} = \|P_{t|t} - P_{t-1}\|
+\]
+\end{itemize}
+
+These metrics ensure smooth geometric trajectories and prevent collapse-risk
+escalation.
+
+\subsection{Routing Benchmarks}
+
+Routing performance is evaluated using:
+
+\begin{itemize}
+\item \textbf{Directional Accuracy}:
+\[
+D = \cos(\mathbf{z}, \mathbf{r}_{i^\*})
+\]
+
+\item \textbf{Route Separation}: Ensures distinct cognitive pathways:
+\[
+S_{ij} = 1 - \cos(\mathbf{r}_i, \mathbf{r}_j)
+\]
+
+\item \textbf{Routing Stability}: Measures consistency across repeated inputs:
+\[
+\sigma_R = \mathrm{Var}(i^\*)
+\]
+\end{itemize}
+
+\subsection{Cognitive Loop Benchmarks}
+
+End-to-end performance is evaluated using:
+
+\begin{itemize}
+\item \textbf{Loop Latency}: Total time per cognitive cycle:
+\[
+T_{\mathrm{loop}} = t_{\mathrm{encode}} + t_{\mathrm{salience}} +
+t_{\mathrm{stability}} + t_{\mathrm{routing}} + t_{\mathrm{action}}
+\]
+
+\item \textbf{Geometric Consistency}: Ensures manifold continuity:
+\[
+G = \|\mathbf{z}_{t} - \mathbf{z}_{t-1}\|
+\]
+
+\item \textbf{Stability Under Load}: Measures performance under high-frequency
+inputs or large batch sizes.
+\end{itemize}
+
+\subsection{Summary}
+
+The benchmark suite provides a comprehensive evaluation of the
+MEM8-Geometric-Architecture, ensuring that each subsystem operates reliably and
+that the full cognitive loop maintains geometric coherence, stability, and
+interpretability.
