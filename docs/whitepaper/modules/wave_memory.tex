@@ -1,0 +1,37 @@
+\section{Wave Memory Encoding}
+
+Let $\mathbf{x} \in \mathbb{R}^n$ be an input vector.  
+We define the wave-encoded memory representation as:
+
+\[
+\mathbf{X}_{wave} = \mathcal{F}(\mathbf{x})
+\]
+
+where $\mathcal{F}$ is the discrete Fourier transform:
+
+\[
+\mathcal{F}(\mathbf{x})_k =
+\sum_{j=0}^{n-1} x_j \exp\left(-2\pi i \frac{jk}{n}\right)
+\]
+
+We store the complex tensor:
+
+\[
+\mathbf{X}_{wave} = \mathbf{A} + i\mathbf{\Phi}
+\]
+
+with magnitude and phase:
+
+\[
+A_k = |\mathcal{F}(\mathbf{x})_k|, \quad
+\Phi_k = \arg(\mathcal{F}(\mathbf{x})_k)
+\]
+
+Compression is performed via PCA or quantization:
+
+\[
+\mathbf{X}_{comp} = Q(P(\mathbf{X}_{wave}))
+\]
+
+This representation provides a stable geometric substrate for memory, enabling
+smooth transitions, reversible updates, and drift-aware semantic alignment.
