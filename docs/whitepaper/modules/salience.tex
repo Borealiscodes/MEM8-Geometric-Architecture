@@ -1,0 +1,68 @@
+\section{Salience Detection}
+
+Salience quantifies the degree to which an incoming semantic state is novel,
+unexpected, or behaviorally relevant. In the MEM8-Geometric-Architecture,
+salience is defined as a geometric signal combining statistical novelty and
+temporal change. This dual formulation ensures that both out-of-distribution
+events and rapid semantic shifts are captured.
+
+Let $\mathbf{x}_t \in \mathbb{R}^d$ denote the fused semantic vector at time $t$.
+We define two complementary components of salience: novelty and temporal change.
+
+\subsection{Statistical Novelty}
+
+Novelty is measured using the Mahalanobis distance, which evaluates how far
+$\mathbf{x}_t$ deviates from the expected distribution of semantic states.
+
+Let $\bm{\mu}$ be the mean semantic vector and $\Sigma$ the covariance matrix.
+Then the novelty score is:
+
+\[
+N(\mathbf{x}_t) =
+\sqrt{(\mathbf{x}_t - \bm{\mu})^\top \Sigma^{-1}
+(\mathbf{x}_t - \bm{\mu})}
+\]
+
+This metric provides a geometry-aware measure of deviation, sensitive to
+directions of high and low variance in the semantic manifold.
+
+\subsection{Temporal Change}
+
+Temporal change captures the magnitude of semantic drift between consecutive
+states:
+
+\[
+T(\mathbf{x}_t) = \|\mathbf{x}_t - \mathbf{x}_{t-1}\|
+\]
+
+This term detects rapid transitions, even when the new state is statistically
+common. It is essential for identifying abrupt shifts in modality, context, or
+intent.
+
+\subsection{Combined Salience}
+
+The full salience score is a weighted combination of novelty and temporal
+change:
+
+\[
+S(\mathbf{x}_t) =
+\alpha\, N(\mathbf{x}_t) + (1 - \alpha)\, T(\mathbf{x}_t)
+\]
+
+where $\alpha \in [0,1]$ controls the balance between distributional novelty
+and temporal dynamics.
+
+\subsection{Geometric Interpretation}
+
+Salience is interpreted as a curvature-sensitive signal on the semantic
+manifold. High novelty corresponds to movement into regions of low prior
+density, while high temporal change corresponds to steep gradients in the
+trajectory.
+
+This geometric formulation enables downstream components—such as stability
+filtering, membrane evaluation, and semantic routing—to respond appropriately
+to surprising or rapidly evolving inputs.
+
+Salience acts as the trigger for cognitive updates, ensuring that the system
+allocates computational resources to states that are both informative and
+behaviorally relevant.
