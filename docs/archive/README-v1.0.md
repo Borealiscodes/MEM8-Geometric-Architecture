@@ -1,4 +1,12 @@
- # 🌈 MEM8‑Geometric‑Architecture
+# Archived README (v1.0)
+This README represents the original structure and conceptual framing of the 
+MEM8-Geometric-Architecture project prior to the unified geometric runtime 
+and appendix suite (A–W). It is preserved for historical and provenance 
+purposes and does not reflect the current architecture or repository layout.
+
+---
+
+# 🌈 MEM8‑Geometric‑Architecture
 
 A geometric infusion of the MEM|8 cognitive‑compute ecosystem
 
@@ -223,3 +231,8 @@ See the LICENSE file in the repository root for full terms.
 
 ---
 
+---
+Archived: 24 October 2026  
+Author: Borealis S. Hedling  
+Repository: github.com/Borealiscodes/MEM8  
+Reason: Replaced by unified geometric runtime and full appendix suite (A–W)
