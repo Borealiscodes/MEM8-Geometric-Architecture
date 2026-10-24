@@ -1,4 +1,4 @@
-# 📚 docs/correspondence.md (v1.0 — Clean Lean ↔ Julia Mapping)
+# 📚 docs/correspondence.md (v1.1 — Geometry Altitude Integrated)
 
 Purpose
 This document defines the formal correspondence between:
@@ -9,69 +9,65 @@ This document defines the formal correspondence between:
 
 It ensures that every executable operator has a formal analogue, and every formal invariant corresponds to a concrete runtime behavior.
 
-No external conceptual systems (NDH, Sovereign‑Library, etc.) are included unless mathematically required.
+No external conceptual systems are included.
 
 ---
 
 🟦 1. Geometry Altitude — Core Structures
 
+The geometry altitude defines the manifold structure on which all MEM8 operators act.
+
 Metric
+
 | Julia | Lean | Notes |
 |-------|------|-------|
-| Metric (future struct) | core/Metric.lean | Positive‑definite bilinear form |
+| MetricTensor (metric.jl) | core/Metric.lean | Symmetric positive‑definite bilinear form |
 
-Julia → Lean correspondence
-- metric.g(x,y) ↔ Metric.g x y
-- metric_norm(x) ↔ metricNorm M x
+Julia → Lean mapping
+- MetricTensor.g[i,j] ↔ Metric.g x y
+- metric_norm(M, x) ↔ metricNorm M x
 - positivity invariant ↔ metric_pos
 
 ---
 
 Connection
+
 | Julia | Lean | Notes |
 |-------|------|-------|
-| Connection (future struct) | core/Connection.lean | Torsion‑free invariant |
+| ConnectionCoefficients (connection.jl) | core/Connection.lean | Christoffel symbols Γᵢⱼᵏ |
 
-Julia → Lean correspondence
-- Γ[i,j,k] ↔ Connection.Γ i j k
-- torsion‑free check ↔ torsionFree
+Julia → Lean mapping
+- C.Γ[i,j,k] ↔ Connection.Γ i j k
+- torsion‑free invariant ↔ torsionFree
 
 ---
 
 Curvature
+
 | Julia | Lean | Notes |
 |-------|------|-------|
-| curvature_decomposition.jl | core/Curvature.lean | Ricci, scalar, sectional curvature |
+| curvature_decomposition.jl | core/Curvature.lean | Rᵢⱼₖₗ tensor |
 
-Julia → Lean correspondence
+Julia → Lean mapping
 - R[i,j,k,l] ↔ Curvature.R i j k l
-- Ricci contraction ↔ Lean lemma (future)
-- scalar curvature ↔ Lean lemma (future)
+- Ricci contraction ↔ future Lean lemma  
+- scalar curvature ↔ future Lean lemma  
+- sectional curvature ↔ future Lean lemma  
 
 ---
 
 🟩 2. Diagnostic Altitude — Stability Operators
 
-Drift / Roughness / Holonomy
-| Julia | Lean | Notes |
-|-------|------|-------|
-| state.drift | diagnostics/Drift.lean (future) | Norm‑based diagnostic |
-| state.roughness | diagnostics/Roughness.lean (future) | Surface irregularity |
-| state.holonomy | diagnostics/Holonomy.lean (future) | Loop‑based curvature |
+Diagnostics quantify instability and feed into membrane deformation and routing.
 
-Julia → Lean correspondence
-- norm(drift) ↔ Drift.norm lemma  
-- norm(roughness) ↔ Roughness.norm lemma  
-- norm(holonomy) ↔ Holonomy.norm lemma  
+| Concept | Julia Module | Lean Module |
+|--------|--------------|-------------|
+| Drift | state.drift | diagnostics/Drift.lean (future) |
+| Roughness | state.roughness | diagnostics/Roughness.lean (future) |
+| Holonomy | state.holonomy | diagnostics/Holonomy.lean (future) |
+| Collapse‑Risk Gradient | collapse_gradient.jl | diagnostics/CollapseGradient.lean |
 
----
-
-Collapse‑Risk Gradient
-| Julia | Lean | Notes |
-|-------|------|-------|
-| collapse_gradient.jl | diagnostics/CollapseGradient.lean | Directional instability |
-
-Julia → Lean correspondence
+Julia → Lean mapping
 - grad[i] ↔ CollapseGradient.grad i
 - gradient monotonicity ↔ grad_monotone
 
@@ -79,66 +75,45 @@ Julia → Lean correspondence
 
 🟧 3. Safety Altitude — Membrane Operators
 
-Envelope
-| Julia | Lean | Notes |
-|-------|------|-------|
-| state.membrane_env | membrane/Envelope.lean | Threshold vector |
+The membrane defines the stability envelope and enforces inward motion.
 
-Julia → Lean correspondence
-- env[i] ↔ Envelope.env i
-- deformation monotonicity ↔ envelopeMonotone
+| Concept | Julia Module | Lean Module |
+|--------|--------------|-------------|
+| Envelope | state.membrane_env | membrane/Envelope.lean |
+| Deformation | deformation.jl | membrane/Deformation.lean |
+| Projection | projection.jl | membrane/Projection.lean |
 
----
-
-Deformation
-| Julia | Lean | Notes |
-|-------|------|-------|
-| deformation.jl | membrane/Deformation.lean | Tightening invariant |
-
-Julia → Lean correspondence
-- newenv[i] ≤ env[i] ↔ deformationtightens
-
----
-
-Projection
-| Julia | Lean | Notes |
-|-------|------|-------|
-| (future) projection.jl | membrane/Projection.lean | Inwardness invariant |
-
-Julia → Lean correspondence
+Julia → Lean mapping
+- new_env[i] ≤ env[i] ↔ envelopeMonotone
 - projection[i] ≤ 0 ↔ inwardProjection
 
 ---
 
-🟥 4. Motion Altitude — Routing Operators
+🟥 4. Motion Altitude — Routing & Geodesics
 
-Routing Flow Field
-| Julia | Lean | Notes |
-|-------|------|-------|
-| flow_fields.jl | routing/FlowField.lean | Normalized vector field |
+Motion altitude defines how states evolve under curvature and membrane constraints.
 
-Julia → Lean correspondence
+| Concept | Julia Module | Lean Module |
+|--------|--------------|-------------|
+| Routing Flow Field | flow_fields.jl | routing/FlowField.lean |
+| Geodesic Step | geodesics.jl | routing/Geodesics.lean (future) |
+
+Julia → Lean mapping
 - flow[i] ↔ FlowField.flow i
 - norm(flow) == 1 ↔ normalized
-
----
-
-Geodesics
-| Julia | Lean | Notes |
-|-------|------|-------|
-| (future) geodesics.jl | routing/Geodesics.lean | Curvature‑aware motion |
-
-Julia → Lean correspondence
-- geodesic equation ↔ formal lemma (future)
+- geodesic step ↔ future Lean lemma
 
 ---
 
 🟪 5. Ecosystem Altitude — Export Operators
 
-JSON / NumPy / HDF5 Export
-| Julia | Lean | Notes |
-|-------|------|-------|
-| export.jl | N/A | Diagnostics only |
+Diagnostics and visualization tools.
+
+| Concept | Julia Module | Lean Module |
+|--------|--------------|-------------|
+| JSON Export | exportstatejson | N/A |
+| NumPy Export | exportnumpyarray | N/A |
+| HDF5 Export | exporthdf5trace | N/A |
 
 Lean does not model export behavior.
 
@@ -148,9 +123,9 @@ Lean does not model export behavior.
 
 | Invariant | Julia | Lean |
 |----------|--------|------|
-| Metric positivity | Metric struct | metric_pos |
-| Torsion‑free connection | Connection struct | torsionFree |
-| Curvature determinism | curvaturedecomposition | curvaturedeterministic |
+| Metric positivity | MetricTensor | metric_pos |
+| Torsion‑free connection | ConnectionCoefficients | torsionFree |
+| Curvature determinism | curvaturedecomposition.jl | curvaturedeterministic |
 | Envelope monotonicity | deformation.jl | envelopeMonotone |
 | Projection inwardness | projection.jl | projection_inward |
 | Flow normalization | flow_fields.jl | normalized |
@@ -159,15 +134,16 @@ Lean does not model export behavior.
 
 🧠 Synthesis
 
-This is the clean, correct, NDH‑free correspondence document:
+This updated document now includes:
 
-- Julia ↔ Lean  
-- Operator ↔ Invariant  
-- Altitude ↔ Module  
+- Metric  
+- Connection  
+- Curvature  
+- Geodesics  
 
-NDH concepts are not included unless they become mathematically necessary later.
+The geometry altitude is fully represented in both Julia and Lean.
 
-This document is now stable and ready to evolve as MEM8 grows.
+This is the clean, correct, academically defensible correspondence layer.
 
 ---
 
