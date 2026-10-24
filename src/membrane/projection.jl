@@ -1,56 +1,40 @@
-module MembraneProjection
+module Projection
 
-export membrane_project
+using LinearAlgebra
+using StaticArrays
 
-using ..Stability.Envelope
-using ..Correction
-using ..Metric
+export inward_projection
 
 """
-    membrane_project(metric, env, z, γ, drift, roughness, holonomy, collapse, interaction)
+    inward_projection(z, membrane_env)
 
-Apply membrane projection to semantic state `z` using:
-- stability envelope `env`
-- predicted geodesic position `γ`
-- diagnostic signals (drift, roughness, holonomy, collapse, interaction)
+Compute an inward-pointing projection vector that pushes the state `z`
+back inside the membrane envelope if any component exceeds its threshold.
 
-If the state is inside the envelope:
-    return z unchanged
+This operator is part of the safety altitude and ensures that routing
+and geodesic motion remain inside the stability envelope.
 
-If the state is outside the envelope:
-    apply geodesic correction scaled by collapse-risk:
-
-        Δz = -gain * (z - γ) * collapse
-
-Return the corrected semantic vector z'.
+All operations are deterministic and use StaticArrays for stability.
 """
-function membrane_project(metric::Metric.Metric,
-                          env::Envelope.StabilityEnvelope,
-                          z::Vector{Float64},
-                          γ::Vector{Float64},
-                          drift::Float64,
-                          roughness::Float64,
-                          holonomy::Float64,
-                          collapse::Float64,
-                          interaction::Float64)
+function inward_projection(z::AbstractVector{Float64},
+                           membrane_env::AbstractVector{Float64})
 
-    # Check envelope membership
-    safe = Envelope.in_envelope(env, drift, roughness, holonomy, collapse, interaction)
+    n = length(z)
+    z = SVector{n}(z)
+    env = SVector{n}(membrane_env)
 
-    if safe
-        return z
+    proj = zeros(Float64, n)
+
+    for i in 1:n
+        if z[i] > env[i]
+            # Push inward proportionally to the violation
+            proj[i] = -(z[i] - env[i])
+        else
+            proj[i] = 0.0
+        end
     end
 
-    # Compute geodesic correction (base gain = 0.1)
-    Δz, deviation = Correction.geodesic_correction(metric, z, γ; gain=0.1)
-
-    # Scale correction by collapse-risk
-    scaled_Δz = Δz .* collapse
-
-    # Apply correction
-    new_z = z .+ scaled_Δz
-
-    return new_z
+    return SVector{n}(proj)
 end
 
-end
+end # module
